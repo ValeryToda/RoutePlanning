@@ -8,18 +8,38 @@
 #include "render.h"
 #include "route_planner.h"
 
+
 using namespace std::experimental;
 
-void ChooseValues(float &start_x, float &start_y, float &end_x, float &end_y)
+
+
+void GetUserInput(const std::string& question, float& value)
 {
-    std::cout << "Please enter x value of start position: "; 
-    std::cin >> start_x;
-    std::cout << "Please enter y value of start position: "; 
-    std::cin >> start_y;
-    std::cout << "Please enter x value of end position: "; 
-    std::cin >> end_x;
-    std::cout << "Please enter y value of end position: "; 
-    std::cin >> end_y;
+    std::cout << question;
+    if (std::cin >> value)
+    {
+        return;
+    }
+    else
+    {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+        GetUserInput(question, value);
+    }
+}
+
+void GetValues(float &start_x, float &start_y, float &end_x, float &end_y)
+{
+    GetUserInput("Please enter x value of start position: ", start_x);
+    GetUserInput("Please enter y value of start position: ", start_y);
+    GetUserInput("Please enter x value of end position: ", end_x);
+    GetUserInput("Please enter y value of end position: ", end_y);
+
+    std::cout << "\nValues entered: \n";
+    std::cout << "  start_x: " << start_x << std::endl;
+    std::cout << "  start_y: " << start_y << std::endl;
+    std::cout << "  end_x: " << end_x << std::endl;
+    std::cout << "  end_y: " << end_y << std::endl;
 }
 
 static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
@@ -68,7 +88,7 @@ int main(int argc, const char **argv)
     float start_x, start_y, end_x, end_y;
     
     // Get user input for these values using std::cin. 
-    ChooseValues(start_x, start_y, end_x, end_y);
+    GetValues(start_x, start_y, end_x, end_y);
 
     // Build Model.
     RouteModel model{osm_data};
